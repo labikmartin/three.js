@@ -2,6 +2,8 @@ import * as THREE from 'three';
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+import SphereTexture from '../assets/me.jpg';
+
 export default class SceneController {
   scene = new THREE.Scene();
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -11,7 +13,7 @@ export default class SceneController {
 
   controls = new OrbitControls(this.camera, this.sceneEl);
 
-  shapes: Record<string, unknown> = {};
+  shapes: Record<string, any> = {};
 
   init() {
     document.body.appendChild(this.sceneEl);
@@ -51,19 +53,34 @@ export default class SceneController {
   createSphereScene() {
     const mainSphereObject = {
       geometry: new THREE.SphereGeometry(2, 15, 15),
-      material: new THREE.MeshBasicMaterial({ color: 0xff0000 }),
+      get sphereTexture() {
+        const sphereTexture = new THREE.TextureLoader().load(SphereTexture);
+        sphereTexture.repeat.set(2, 1);
+
+        return sphereTexture;
+      },
+      get material() {
+        return new THREE.MeshBasicMaterial({
+          map: this.sphereTexture,
+          reflectivity: 1,
+        });
+      },
       get mesh() {
         return new THREE.Mesh(this.geometry, this.material);
       },
     };
     this.shapes.mainSphereObject = mainSphereObject;
 
+    this.scene.add(this.shapes.mainSphereObject.mesh);
+
+    this.reRender();
+
     const ambientLight = new THREE.AmbientLight(0xffd600, 1);
     const pointLight = new THREE.PointLight(0xffd600, 1);
     const fog = new THREE.Fog(0x3f7b9d, 1, 7);
 
     this.scene.fog = fog;
-    this.scene.add(mainSphereObject.mesh, ambientLight);
+    this.scene.add(ambientLight);
 
     this.camera.add(pointLight);
 
