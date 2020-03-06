@@ -34,7 +34,7 @@ export default class SceneController {
     this.controls.update();
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setClearColor('#000');
+    this.renderer.setClearColor('#dedede');
     this.reRender();
   }
 
@@ -60,7 +60,7 @@ export default class SceneController {
         return sphereTexture;
       },
       get material() {
-        return new THREE.MeshBasicMaterial({
+        return new THREE.MeshLambertMaterial({
           map: this.sphereTexture,
           reflectivity: 1,
         });
@@ -71,23 +71,20 @@ export default class SceneController {
     };
     this.shapes.mainSphereObject = mainSphereObject;
 
-    this.scene.add(this.shapes.mainSphereObject.mesh);
-
-    this.reRender();
-
-    const ambientLight = new THREE.AmbientLight(0xffd600, 1);
-    const pointLight = new THREE.PointLight(0xffd600, 1);
     const fog = new THREE.Fog(0x3f7b9d, 1, 7);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    ambientLight.position.set(10, 0, 25);
+
+    const pointLight = new THREE.PointLight(0xffffff, 1, 1000);
+    pointLight.position.set(10, 0, 25);
 
     this.scene.fog = fog;
-    this.scene.add(ambientLight);
-
-    this.camera.add(pointLight);
+    this.scene.add(this.shapes.mainSphereObject.mesh, pointLight, ambientLight);
 
     const controlsAnimation = () => {
       requestAnimationFrame(controlsAnimation);
       this.controls.update();
-      this.renderer.render(this.scene, this.camera);
+      this.reRender();
     };
 
     controlsAnimation();
