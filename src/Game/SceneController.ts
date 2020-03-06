@@ -32,7 +32,7 @@ export default class SceneController {
     this.controls.update();
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setClearColor('#dedede');
+    this.renderer.setClearColor('#000');
     this.reRender();
   }
 
@@ -51,17 +51,20 @@ export default class SceneController {
   createSphereScene() {
     const mainSphereObject = {
       geometry: new THREE.SphereGeometry(2, 15, 15),
-      material: new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true }),
+      material: new THREE.MeshBasicMaterial({ color: 0xff0000 }),
       get mesh() {
         return new THREE.Mesh(this.geometry, this.material);
       },
     };
     this.shapes.mainSphereObject = mainSphereObject;
 
-    var ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-    var pointLight = new THREE.PointLight(0xffffff, 1);
+    const ambientLight = new THREE.AmbientLight(0xffd600, 1);
+    const pointLight = new THREE.PointLight(0xffd600, 1);
+    const fog = new THREE.Fog(0x3f7b9d, 1, 7);
 
+    this.scene.fog = fog;
     this.scene.add(mainSphereObject.mesh, ambientLight);
+
     this.camera.add(pointLight);
 
     const controlsAnimation = () => {
