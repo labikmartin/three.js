@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import './App.css';
 
-import GameController from './Game/Game';
+import SceneController from './Game/SceneController';
 
 function App() {
-  const Game = new GameController();
-
   useEffect(() => {
-    Game.init();
-  }, [Game]);
+    const Scene = new SceneController();
 
-  return <div className="App">This is Game Biatch!</div>;
+    Scene.init();
+  }, []);
+
+  return <Fragment />;
 }
 
 export default App;
